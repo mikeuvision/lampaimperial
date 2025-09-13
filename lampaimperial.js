@@ -1,9 +1,9 @@
 (function () {
     let themes = {
         "Imperial Orchestra": {
-            background: "#0b0b0d",   // глубокий тёмный фон
-            text: "#f5f1e6",         // светлый текст (слоновая кость)
-            accent: "#d4af37",       // золотой акцент
+            background: "#0b0b0d",
+            text: "#f5f1e6",
+            accent: "#d4af37",
             fontFamily: "serif",
             fontSize: "18px"
         },
@@ -61,7 +61,10 @@
 
         Lampa.Select.show({
             title: "Выберите тему оформления",
-            items: keys.map(name => ({ title: name, theme: themes[name] })),
+            items: keys.map(name => ({
+                title: name,
+                theme: themes[name]
+            })),
             onSelect: (a) => {
                 Lampa.Storage.set("theme_customizer.current", a.title);
                 applyTheme(a.theme);
@@ -73,17 +76,19 @@
     }
 
     function init() {
-        // Создаём плагин через стандартное API
-        Lampa.Plugin.create({
-            title: 'Theme Customizer',
-            description: 'Выбор расширенных тем оформления (Imperial Orchestra и др.)',
-            onSelect: showThemeMenu
-        });
+        try {
+            Lampa.Plugin.create({
+                title: 'Theme Customizer',
+                description: 'Выбор расширенных тем оформления',
+                onSelect: showThemeMenu
+            });
 
-        // Автоприменение сохранённой темы
-        let saved = Lampa.Storage.get("theme_customizer.current", false);
-        if (saved && themes[saved]) {
-            applyTheme(themes[saved]);
+            let saved = Lampa.Storage.get("theme_customizer.current", false);
+            if (saved && themes[saved]) {
+                applyTheme(themes[saved]);
+            }
+        } catch (e) {
+            console.error("Theme plugin error:", e);
         }
     }
 
