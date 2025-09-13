@@ -1,10 +1,10 @@
 (function () {
     let themes = {
         "Imperial Orchestra": {
-            background: "#0b0b0d",       // глубокий тёмный фон
-            text: "#f5f1e6",             // светлый текст (слоновая кость)
-            accent: "#d4af37",           // золотой акцент
-            fontFamily: "serif",         // шрифт с засечками
+            background: "#0b0b0d",   // глубокий тёмный фон
+            text: "#f5f1e6",         // светлый текст (слоновая кость)
+            accent: "#d4af37",       // золотой акцент
+            fontFamily: "serif",
             fontSize: "18px"
         },
         "Dark Blue": {
@@ -25,6 +25,7 @@
 
     function applyTheme(theme) {
         if (!theme) return;
+
         let css = `
             body {
                 background-color: ${theme.background} !important;
@@ -57,6 +58,7 @@
 
     function showThemeMenu() {
         let keys = Object.keys(themes);
+
         Lampa.Select.show({
             title: "Выберите тему оформления",
             items: keys.map(name => ({ title: name, theme: themes[name] })),
@@ -71,19 +73,23 @@
     }
 
     function init() {
-        // Кнопка в меню «Приложения»
-        Lampa.Api.addPlugin({
-            title: "Theme Customizer",
-            description: "Расширенные темы оформления",
+        // Создаём плагин через стандартное API
+        Lampa.Plugin.create({
+            title: 'Theme Customizer',
+            description: 'Выбор расширенных тем оформления (Imperial Orchestra и др.)',
             onSelect: showThemeMenu
         });
 
-        // Автоприменение последней выбранной темы
+        // Автоприменение сохранённой темы
         let saved = Lampa.Storage.get("theme_customizer.current", false);
         if (saved && themes[saved]) {
             applyTheme(themes[saved]);
         }
     }
 
-    init();
+    if (window.Lampa) {
+        init();
+    } else {
+        document.addEventListener("lampa", init);
+    }
 })();
